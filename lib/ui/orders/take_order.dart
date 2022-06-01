@@ -1,84 +1,173 @@
 import 'package:annapurna/constants/colors.dart';
+import 'package:annapurna/model/cart_product_model.dart';
+import 'package:annapurna/model/product_fetch_model.dart';
+import 'package:annapurna/providers/cart_provider.dart';
+import 'package:annapurna/providers/dashboard_provider.dart';
+import 'package:annapurna/providers/product_with_category_provider.dart';
+import 'package:annapurna/ui/custom_widgets/admin_dropdown.dart';
+import 'package:annapurna/ui/custom_widgets/dropdown_widget.dart';
+import 'package:annapurna/utils/no_data.dart';
+import 'package:annapurna/utils/progress_dialog.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TakeOrder extends StatelessWidget {
-  TakeOrder({Key? key}) : super(key: key);
-  final items = ['Appetizers', 'Main Course', 'Desserts', 'Beverages'];
-  final icons = [
-    Icons.restaurant_menu,
-    Icons.fastfood,
-    Icons.icecream,
-    Icons.coffee
-  ];
+import 'cart_list.dart';
+import 'category_list.dart';
+import 'product_list.dart';
+
+class TakeOrder extends ConsumerStatefulWidget {
+  const TakeOrder({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<TakeOrder> createState() => _TakeOrderState();
+}
+
+class _TakeOrderState extends ConsumerState<TakeOrder> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      ref.read(productNotifierProvider).getProducts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
+    final tableId = args['tableId'] as int;
+    final tableStatus = args['status'] as String;
+    if (tableStatus == "occupied") {
+      print('order for table');
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        ref.read(productNotifierProvider).getCart(tableId);
+      });
+    }
     return Scaffold(
       backgroundColor: colorBackground,
       body: SafeArea(
         child: SizedBox(
-          width: double.infinity,
-          child: Row(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Expanded(child: LeftList(icons: icons, items: items)),
-              Expanded(child: RightList()),
+              Column(
+                children: [
+                  Container(
+                    color: colorBackgroundDark,
+                    width: double.infinity,
+                    height: 50,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 32.0, right: 32),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon:
+                                  Icon(Icons.arrow_back, color: Colors.white)),
+                          AdminDropDownStatefulWidget()
+                        ],
+                      ),
+                    ),
+                  ),
+                  Consumer(builder:
+                      (BuildContext context, WidgetRef ref, Widget? child) {
+                    final provider = ref.watch(productNotifierProvider);
+
+                    if (provider.apiResponse.isLoading) {
+                      return const ProgressDialog();
+                    }
+                    if (provider.goBack) {
+                      WidgetsBinding.instance!
+                          .addPostFrameCallback((timeStamp) {
+                        ref.read(dashboardNotifierProvider).getTables();
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.SUCCES,
+                          animType: AnimType.BOTTOMSLIDE,
+                          title: 'Your order has been placed successfully',
+                          btnOkOnPress: () {
+                            Navigator.of(context).pop();
+                          },
+                        ).show();
+                      });
+                      return const ProgressDialog();
+                    }
+
+                    if (provider.apiResponse.model == null ||
+                        (provider.apiResponse.model as List<ProductFetchModel>)
+                            .isEmpty) {
+                      return const NoData();
+                    } else {
+                      final data = (provider.apiResponse.model
+                          as List<ProductFetchModel>);
+
+                      return Consumer(builder:
+                          (BuildContext context, WidgetRef ref, Widget? child) {
+                        final selected = ref.watch(selectedProvider);
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: CategoryList(
+                                  items: data,
+                                  selectedPosition: selected,
+                                )),
+                            Expanded(
+                              flex: 6,
+                              child: ProductList(
+                                items: data[selected].items,
+                              ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: CartList(
+                                    tableId: tableId,
+                                    tableStatus: tableStatus)),
+                          ],
+                        );
+                      });
+                    }
+                  }),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: SizedBox(
+                  width: 300,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      if (tableStatus == "occupied") {
+                        ref.read(productNotifierProvider).updateOrder(
+                            tableId, ref.read(cartProvider).cartItems);
+                      } else {
+                        ref.read(productNotifierProvider).createOrder(
+                            tableId, ref.read(cartProvider).cartItems);
+                      }
+                    },
+                    child: const Text(
+                      "Place Order",
+                      style: TextStyle(color: colorReserved),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: colorReserved),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class RightList extends StatelessWidget {
-  const RightList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [Text('Baked Potatoes'), Text('NPR. 400.00')],
-      ),
-    );
-  }
-}
-
-class LeftList extends StatelessWidget {
-  const LeftList({
-    Key? key,
-    required this.icons,
-    required this.items,
-  }) : super(key: key);
-
-  final List<IconData> icons;
-  final List<String> items;
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> widgets = [];
-    for (int i = 0; i < items.length; i++) {
-      widgets.add(Card(
-          child: SizedBox(
-        width: 200,
-        child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Icon(
-                  icons[i],
-                  color: Colors.grey,
-                  size: 36.0,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Text(items[i])
-              ],
-            )),
-      )));
-    }
-    return Column(
-      children: widgets,
     );
   }
 }

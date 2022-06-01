@@ -1,24 +1,28 @@
 import 'package:annapurna/constants/colors.dart';
+import 'package:annapurna/model/table_model.dart';
+import 'package:annapurna/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 class TableItem extends StatelessWidget {
-  final int status;
+  final TableModel? data;
   const TableItem({
     Key? key,
-    required this.status,
+    this.data,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Color color = colorVacant;
-    String textStatus = 'Vacant';
-    if (status == 0) {
+    String textStatus = data!.name;
+    String name = data!.name;
+    String status = data!.status;
+    if (status == "occupied") {
       color = colorOccupied;
       textStatus = 'Occupied';
-    } else if (status == 1) {
+    } else if (status == "vacant") {
       color = colorVacant;
       textStatus = 'Vacant';
-    } else if (status == 2) {
+    } else if (status == "reserved") {
       color = colorReserved;
       textStatus = 'Reserved';
     }
@@ -62,11 +66,11 @@ class TableItem extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(16.0))),
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 40,
             left: 20,
             child: Text(
-              'T1',
+              name,
               style: TextStyle(color: colorGreyText),
             ),
           ),

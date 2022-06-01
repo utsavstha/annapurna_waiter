@@ -8,3 +8,7 @@ const colorGreyText = Color(0xff5a626d);
 const colorOccupied = Color(0xffa5dedd);
 const colorVacant = Color(0xff5cba46);
 const colorReserved = Color(0xfffdea01);
+const colorLightYellow = Color(0xfffef9e7);
+const colorGoldenYellow = Color(0xffdcb15d);
+const colorFoodItemBackground = Color(0xff393e48);
+const colorLightBlue = Color(0xff2a78bd);
