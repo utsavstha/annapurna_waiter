@@ -1,8 +1,7 @@
 import 'package:annapurna/constants/colors.dart';
 import 'package:annapurna/providers/auth_provider.dart';
 import 'package:annapurna/routes/app_pages.dart';
-import 'package:annapurna/ui/custom_widgets/input_container.dart';
-import 'package:annapurna/ui/custom_widgets/rounded_button.dart';
+
 import 'package:annapurna/ui/custom_widgets/rounded_input.dart';
 import 'package:annapurna/utils/progress_dialog.dart';
 import 'package:annapurna/utils/save_data.dart';
