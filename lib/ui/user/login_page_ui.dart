@@ -45,7 +45,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     Size size = MediaQuery.of(context).size;
 
     double defaultLoginSize = size.height - (size.height * 0.2);
-    double defaultRegisterSize = size.height - (size.height * 0.1);
 
     return Scaffold(
       body: Consumer(
