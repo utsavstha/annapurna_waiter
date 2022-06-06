@@ -1,7 +1,7 @@
 import 'package:annapurna/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-///This component is used to show indeterminate progress dialog whenever an api call is being made
+/// This component is used to show indeterminate progress dialog whenever an api call is being made
 class ProgressDialog extends StatelessWidget {
   const ProgressDialog({
     Key? key,
