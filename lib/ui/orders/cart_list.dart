@@ -39,8 +39,6 @@ class _CartListState extends ConsumerState<CartList> {
 
   @override
   Widget build(BuildContext context) {
-    // widgets.add(FoodItem());
-
     return Container(
       padding: const EdgeInsets.only(left: 12, right: 12),
       color: colorBackground,
