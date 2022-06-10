@@ -19,7 +19,6 @@ class CartList extends ConsumerStatefulWidget {
 class _CartListState extends ConsumerState<CartList> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.tableStatus == "occupied") {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
