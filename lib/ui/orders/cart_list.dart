@@ -1,6 +1,5 @@
 import 'package:annapurna/constants/colors.dart';
 import 'package:annapurna/model/cart_product_model.dart';
-import 'package:annapurna/model/product_fetch_model.dart';
 import 'package:annapurna/providers/cart_provider.dart';
 import 'package:annapurna/ui/orders/cart_item.dart';
 import 'package:flutter/material.dart';
