@@ -30,7 +30,7 @@ class FoodItem extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Text(
