@@ -25,7 +25,7 @@ class FoodItem extends ConsumerWidget {
                 children: [
                   Text(
                     item.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
@@ -40,7 +40,7 @@ class FoodItem extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.white38),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Text(
