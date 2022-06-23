@@ -23,7 +23,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
   @override
   void initState() {
     super.initState();
-    // Stream.periodic(Duration(seconds: 5)).asyncMap((i) => _fetchData());
+
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       ref.read(dashboardNotifierProvider).getTables();
     });
