@@ -31,7 +31,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
   }
 
   _fetchData() {
-    //WidgetsBinding.nstce!.addPostFrameCallback((timeStamp) {
+    //WidetsBinding.nstce!.addPostFrameCallback((timeStamp) {
     ref.read(dashboardNotifierProvider).pollTables();
     // });
   }
